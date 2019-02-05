@@ -1,0 +1,139 @@
+#%RAML 1.0 NamedExample
+debitosAberto: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": true,
+      "debitosEmAberto": [
+        {
+          "plano": "plano 1",
+          "debitos": [
+            "2018-08-10",
+            "2018-09-10"
+          ]
+        },
+        {
+          "plano": "plano 2",
+          "debitos": [
+            "2019-01-10"
+          ]
+        }
+      ],
+      "soPossuiBoletoAVencer": false
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": false
+    }
+  }
+boletoVencer: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": true,
+      "dataVencimentoBoletoAVencer": "2019-02-01"
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": false
+    }
+  }
+nenhumDebitoAVencer: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": false,
+      "dataUltimoPagamento": "2019-01-01"
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": false
+    }
+  }
+impressao: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": false,
+      "dataUltimoPagamento": "2019-01-01"
+    },
+    "impressao": {
+      "possuiImpressao": true,
+      "data": "2019-01-01T08:15:00",
+      "vencimento": "2019-01-01",
+      "horasParaPagamento": 8
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": false
+    }
+  }
+serasa: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": false,
+      "dataUltimoPagamento": "2019-01-01"
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": true,
+      "possuiCadastroPreSerasa": false
+    }
+  }
+preSerasa: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": false,
+      "dataUltimoPagamento": "2019-01-01"
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": true,
+      "dataPreSerasa": "2019-01-01"
+    }
+  }
+baixaSerasa: |
+  {
+    "nomeEmpresa": "ACME",
+    "emailResponsavel": "jose.silva@acme.com",
+    "debitos": {
+      "possuiDebitos": false,
+      "soPossuiBoletoAVencer": false,
+      "dataUltimoPagamento": "2019-01-01"
+    },
+    "impressao": {
+      "possuiImpressao": false
+    },
+    "serasa": {
+      "possuiCadastroSerasa": false,
+      "possuiCadastroPreSerasa": false,
+      "dataRetiradaSerasa": "2019-01-01"
+    }
+  }

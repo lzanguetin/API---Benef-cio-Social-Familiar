@@ -1,0 +1,63 @@
+#%RAML 1.0 NamedExample
+#%RAML 1.0 NamedExample
+validacaoCartao: |
+  {
+    "dataNascimento": "1979-09-27",
+    "protocoloValidacao": 12345,
+    "cestaAlimentos": {
+      "possuiCestaAReceber": false
+    },
+    "beneficio": {
+      "status": 0
+    }
+  }
+cesta: |
+  {
+    "dataNascimento": "1979-09-27",
+    "cestaAlimentos": {
+      "possuiCestaAReceber": true,
+      "numero": 12345,
+      "dataRecebimento": "2019-02-01"
+    },
+    "beneficio": {
+      "status": 0
+    }
+  }
+pendenteDocumentos: |
+  {
+    "dataNascimento": "1979-09-27",
+    "cestaAlimentos": {
+      "possuiCestaAReceber": false
+    },
+    "beneficio": {
+      "status": 1,
+      "listaDocumentos": [
+        "Comprovante de endereço",
+        "Documento 2",
+        "Documento 3"
+      ]
+    }
+  }
+beneficioAprovado: |
+  {
+    "dataNascimento": "1979-09-27",
+    "cestaAlimentos": {
+      "possuiCestaAReceber": false
+    },
+    "beneficio": {
+      "status": 2,
+      "dataRecebimentoBeneficio": "2019-02-01",
+      "nomeSindicatoAReceber": "Sindicato"
+    }
+  }
+cartaoEnviado: |
+  {
+    "dataNascimento": "1979-09-27",
+    "cestaAlimentos": {
+      "possuiCestaAReceber": false
+    },
+    "beneficio": {
+      "status": 3,
+      "dataRecebimentoCartao": "2019-02-01"
+    }
+  }

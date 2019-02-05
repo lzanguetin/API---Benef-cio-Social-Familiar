@@ -1,0 +1,18 @@
+#%RAML 1.0 SecurityScheme
+  description: |
+    Esquema de segurança proposto pela VoxAge para implementação de APIs pelos parceiros
+  type: x-custom
+  describedBy:
+    headers:
+      Authorization:
+        description: |
+          Token de acesso, no formato Bearer XXXXXXXXXXXX
+        type: string
+        example: Bearer XXXXXXXXXXXX
+    responses:
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.

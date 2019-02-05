@@ -1,0 +1,21 @@
+#%RAML 1.0 DataType
+  type: object
+  properties:
+    msg: 
+      required: true
+      displayName: Mensagem
+      description: Mensagem de erro resumida
+      type: string
+      example: "SQLServerException"
+    msgDetalhada:
+      displayName: Mensagem Detalhada
+      description: Mensagem de erro detalhada. Pode conter stack trace, detalhe da exceção gerada, qualquer string que auxilie no diagnóstico
+      required: true
+      type: string
+      example: "SQL Server Exception - connection reset"
+    codigo:
+      displayName: Código do Erro
+      description: Código de erro para auxílio no diagnóstico
+      required: true
+      type: string
+      example: "err-456"

@@ -1,0 +1,34 @@
+#%RAML 0.8
+title: Example API
+baseUri: http://example.com/api
+
+/test:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "success": true
+              }
+
+/noexample:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+
+/mediatypeextension{mediaTypeExtension}:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "foo": "bar"
+              }
+          application/xml:
+            example: !include ./example.xml

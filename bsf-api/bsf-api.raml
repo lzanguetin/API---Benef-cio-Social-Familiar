@@ -1,0 +1,250 @@
+#%RAML 1.0
+# npm install -g osprey-mock-service
+# osprey-mock-service-v2 -f api.raml -p 3001 --cors
+title: Beneficio Social
+version: v1
+description: Middleware para comunicação entre as aplicações da VoxAge (URA/ChatBot) com os sistemas da Beneficio Social
+baseUri: http://localhost:3001/{version}
+mediaType: application/json
+securitySchemes:
+  VoxAge: !include security/voxage-security.raml
+types:
+  DadosEmpresa: !include types/DadosEmpresa-type.raml
+  DadosOperador: !include types/DadosOperador-type.raml
+  DadosTrabalhador: !include types/DadosTrabalhador-type.raml
+  Ocorrencia: !include types/Ocorrencia-type.raml
+  Erro404: !include types/Erro404-type.raml
+  Erro500: !include types/Erro500-type.raml
+/acesso:
+  description: Obter um token de acesso à api
+  get:
+    description: |
+      Obter um token de acesso à api, utilizando usuário e senha. O token retornado deve ser utilizado em todas as chamadas da API conforme esquema de segurança definido nesta documentação.
+    
+      **Observação (1)**
+      O sistema da VoxAge trabalha com múltiplos canais simultâneos de atendimento, onde cada canal poderá gerar um token utilizando o mesmo usuário e senha. Em outras palavras, o sistema do parceiro deve aceitar autenticação de vários canais ao mesmo tempo. Fica a cargo do parceiro definir se será gerado o mesmo token ou se será gerado um token a cada autenticação. Do lado da VoxAge, cada canal irá se autenticar e utilizar o próprio token nas chamadas seguintes.
+      
+      **Exemplo 1:**
+        Canal 1 -> obterToken (usuario: voxage, senha: 1234), retorna o token ABCD. A partir daí, durante a chamada esse token será utilizado
+        Canal 2 -> obterToken (usuario: voxage, senha: 1234), pode retornar o token ABCD. A partir daí, ambos os canais 1 e 2 utilizarão o token ABCD para as chamadas
+        
+      **Exemplo 2:**
+        Canal 1 -> obterToken (usuario: voxage, senha: 1234), retorna o token ABCD. A partir daí, durante a chamada esse token será utilizado
+        Canal 2 -> obterToken (usuario: voxage, senha: 1234), pode retornar o token EFGH. A partir daí, durante a chamada o token EFGH será utilizado
+        
+        Nesse exemplo, cada canal utiliza o seu token enquanto durar a chamada
+        
+      **Observação (2)**
+      O sistema da VoxAge inicia e termina uma sessão a cada chamada. Assim que uma ligação termina, a próxima chamada irá autenticar novamente.
+    queryParameters: 
+      usuario:
+        description: Nome do usuário para ser autenticado
+        example: voxage
+        required: true
+        type: string
+      senha:
+        description: Senha para autenticação. Pode ser criptografada.
+        example: segredo
+        required: true
+        type: string
+    responses: 
+      200:
+        description: Token de acesso à API
+        body: 
+          application/json:
+            examples:
+              Exemplo: |
+                {
+                  "token": "ABCD"
+                }
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml
+/dadosEmpresa:
+  description: Obter dados da empresa
+  securedBy: VoxAge
+  get:
+    description: Retorna os dados da empresa
+    queryParameters:
+      cnpj:
+        description: CNPJ da Empresa, apenas dígitos, incluindo o digito verificador. Sem nenhum zero a esquerda
+        example: 11222333000102
+        required: true
+        type: number
+    responses: 
+      200:
+        description: Dados cadastrais da empresa
+        body: 
+          application/json:
+            type: DadosEmpresa
+            examples: !include examples/DadosEmpresa-examples.raml
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.
+      404:
+        description: Quando o CNPJ não é encontrado na base, deve ser retornado erro 404. Esse retorno não deve ser usado quando dá erro na consulta, nesse caso utilizar o erro 500
+        body:
+          application/json:
+            type: Erro404
+            example: !include examples/Erro404-example.raml
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml
+
+/dadosOperador:
+  description: Obter dados do operador
+  securedBy: VoxAge
+  get:
+    description: Retorna os dados de um operador
+    queryParameters:
+      cnpj:
+        description: CNPJ da Empresa, apenas dígitos, incluindo o digito verificador. Sem nenhum zero a esquerda
+        example: 11222333000102
+        required: true
+        type: number
+      cpf:
+        description: CPF do Operador, apenas dígitos, incluindo o digito verificador. Sem nenhum zero a esquerda
+        example: 1122233344
+        required: true
+        type: number        
+    responses: 
+      200:
+        description: Dados cadastrais do operador
+        body: 
+          application/json:
+            type: DadosOperador
+            examples: !include examples/DadosOperador-examples.raml
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.
+      404:
+        description: Quando o operador não é encontrado na base, significa que ele não possui cadastro (nem ativo, nem inativo). Deve ser retornado erro 404. Esse retorno não deve ser usado quando dá erro na consulta, nesse caso utilizar o erro 500
+        body:
+          application/json:
+            type: Erro404
+            example: !include examples/Erro404-example.raml
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml
+
+/dadosTrabalhador:
+  description: Obter dados do trabalhador
+  securedBy: VoxAge
+  get:
+    description: Retorna os dados de um trabalhador
+    queryParameters:
+      cpf:
+        description: CPF do Trabalhador, apenas dígitos, incluindo o digito verificador. Sem nenhum zero a esquerda
+        example: 1122233344
+        required: true
+        type: number        
+    responses: 
+      200:
+        description: Dados cadastrais do trabalhador
+        body: 
+          application/json:
+            type: DadosTrabalhador
+            examples: !include examples/DadosTrabalhador-examples.raml
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.
+      404:
+        description: Quando o trabalhador não é encontrado na base, significa que ele não possui cadastro (nem ativo, nem inativo). Deve ser retornado erro 404. Esse retorno não deve ser usado quando dá erro na consulta, nesse caso utilizar o erro 500
+        body:
+          application/json:
+            type: Erro404
+            example: !include examples/Erro404-example.raml
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml
+
+/registrarOcorrencia:
+  description: Registrar Ocorrência no sistema da Beneficio Social
+  post:
+    securedBy: VoxAge
+    description: |
+      Cada evento gerado pelo sistema VoxAge irá gerar uma ocorrência que poderá ser utilizada pelo parceiro para registrar no sistema integrado. As ocorrências possíveis estão documentadas no fluxo de diálog da PA Digital
+    body: 
+      application/json:
+        type: Ocorrencia
+        example: !include examples/Ocorrencia-example.raml
+    responses: 
+      200:
+        description: Mensagem de confirmação da operação
+        body: 
+          application/json:
+            examples:
+              Exemplo: |
+                {
+                  "msg": "OK",
+                  "msgDetalhada": "Operação realizada com sucesso"
+                }
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml
+
+/reiniciarSenha:
+  description: Reiniciar senha do operador
+  get:
+    securedBy: VoxAge
+    description: |
+      Comando para reiniciar senha de um operador
+    queryParameters:
+      cpf:
+        description: CPF do operador, sem zeros a esquerda
+        example: 1122233345
+        required: true
+        type: number
+    responses: 
+      200:
+        description: Mensagem de confirmação da operação
+        body: 
+          application/json:
+            examples:
+              Exemplo: |
+                {
+                  "msg": "OK",
+                  "msgDetalhada": "Operação realizada com sucesso"
+                }
+      401:
+        description: |
+          Usuário não autenticado, ou token expirado. É necessário enviar um token válido ou então re-autenticar o usuário.
+      403:
+        description: |
+          Usuário não autorizado a utilizar este método. O token é válido porém é necessário verificar as permissões deste token.
+      500:
+        description: Caso aconteça algum erro na consulta, é necessário retornar a mensagem de erro e o código de erro. Isso facilita no diagnóstico de problemas do lado da PA Digital, pois no log esse código de erro será apresentado assim como as mensagens.
+        body:
+          application/json:
+            type: Erro500
+            example: !include examples/Erro500-example.raml

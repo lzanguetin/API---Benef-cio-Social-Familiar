@@ -1,0 +1,77 @@
+#%RAML 1.0 DataType
+  type: object
+  properties:
+    dataNascimento:
+      description: Data de Nascimento. O campo deve estar no formato **yyyy-mm-dd**
+      required: true
+      type: date-only
+      example: "1979-09-27"
+    protocoloValidacao:
+      description: Numero do protocolo de validação do cartão benefício.
+      required: false
+      type: number
+      example: 12345
+    cestaAlimentos:
+      description: Dados referentes a cesta de alimentos do trabalhador
+      type: object
+      required: true
+      properties:
+        possuiCestaAReceber:
+          description: Indica se o trabalhador possui alguma cesta de alimentos para receber. Caso positivo, os dados da cesta virão nos campos **numero** e **dataRecebimento**
+          required: true
+          type: boolean
+          example: true
+        numero:
+          description: Numero da cesta a ser recebida. Esse campo só deve ser preenchido caso o campo **possuiCestaAReceber** for **true**.
+          required: false
+          type: number
+          example: 12345
+        dataRecebimento:
+          description: |
+            Data prevista para recebimento da cesta de alimentos. Esse campo só deve ser preenchido caso o campo **possuiCestaAReceber** for **true**. 
+            
+            **IMPORTANTE!** Caso o valor da data seja anterior à data atual, o sistema da VoxAge irá registrar como erro na integração
+          required: false
+          type: date-only
+          example: "2019-02-01"
+    beneficio:
+      description: Dados do beneficio do trabalhador
+      type: object
+      required: true
+      properties:
+        status:
+          description: |
+            Situação do benefício. Pode ter os seguintes valores:
+            
+            **0.** Nenhuma pendência. Nenhum campo adicional precisa ser preenchido
+
+            **1.** Ainda há documentos pendentes. O campo **listaDocumentos** deve ser preenchido.
+             
+            **2.** Benefício aprovado. Os campos **dataRecebimentoBeneficio** e **nomeSindicatoAReceber** devem ser preenchidos
+            
+            **3.** Cartão de benefícios já foi enviado. O campo **dataRecebimentoCartao** deve ser preenchido
+          required: true
+          type: number
+          minimum: 0
+          maximum: 3
+          example: 1
+        listaDocumentos:
+          description: Lista de documentos que estão pendentes para prosseguir com a análise. Só deve ser preenchido caso o campo **status** for **1**.
+          required: false
+          type: array
+          items: string
+        dataRecebimentoBeneficio:
+          description: Data que o beneficio será entregue ao sindicato. Só deve ser preenchido caso o campo **status** for **2**.
+          required: false
+          type: date-only
+          example: "2019-02-01"
+        nomeSindicatoAReceber:
+          description: Nome do sindicato que vai receber o beneficio. Só deve ser preenchido caso o campo **status** for **2**.
+          required: false
+          type: string
+          example: "Sindicato"
+        dataRecebimentoCartao:
+          description: Data que o cartão beneficio será entregue ao trabalhador. Só deve ser preenchido caso o campo **status** for **3**.
+          required: false
+          type: date-only
+          example: "2019-02-01"

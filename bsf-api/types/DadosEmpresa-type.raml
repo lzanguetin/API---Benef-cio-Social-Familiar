@@ -1,0 +1,105 @@
+#%RAML 1.0 DataType
+  type: object
+  properties:
+    nomeEmpresa:
+      description: Nome da empresa
+      required: true
+      type: string
+      example: "ACME"
+    emailResponsavel:
+      description: E-mail do responsável pela empresa. É usado para informar nos pontos em que o operador precisa ativar um cadastro
+      required: true
+      type: string
+      example: "jose.silva@acme.com"
+    debitos:
+      description: Dados referentes aos débitos da empresa
+      type: object
+      required: true
+      properties:
+        possuiDebitos:
+          description: Indica se a empresa possui algum débito em aberto. Caso o valor seja **true**, o detalhamento deve ser preenchido no campo **debitosEmAberto**
+          required: true
+          type: boolean
+          example: true
+        debitosEmAberto:
+          description: Relação de todos os débitos em aberto da empresa, agrupados por plano. Só deve ser preenchido se o campo **possuiDebitos** for **true**.
+          required: false
+          type: array
+          items:
+            type: object
+            properties:
+              plano:
+                description: Nome do plano
+                required: true
+                type: string
+              debitos:
+                description: Lista de débitos em aberto, cada elemento desse array é uma string no formato **yyyy-mm-dd**
+                required: true
+                type: array
+                items: date-only
+        soPossuiBoletoAVencer:
+          description: Indica se a empresa não possui nenhum débito, apenas um único boleto a vencer. Caso o valor seja **true**, o detalhamento deve ser preenchido no campo **dataVencimentoBoletoAVencer**
+          required: true
+          type: boolean
+          example: true
+        dataVencimentoBoletoAVencer:
+          description: Data de vencimento do boleto a vencer. Só deve ser preenchido se o campo **soPossuiBoletoAVencer** for **true**.
+          required: false
+          type: date-only
+          example: "2019-02-01"
+        dataUltimoPagamento:
+          description: Data do último pagamento realizado pela empresa. Só será utilizado se os campos **possuiDebitos** e **soPossuiBoletoAVencer** forem, ambos, **false**, ou seja, a empresa não tem nenhum débito em aberto nem nenhum boleto a vencer.
+          required: false
+          type: date-only
+          example: "2019-02-01"
+    impressao:
+      description: Dados referentes à última impressão da empresa
+      required: true
+      type: object
+      properties:
+        possuiImpressao:
+          description: Indica se a empresa possui ou não impressão, conforme regra definida no fluxo da URA e do ChatBot. A URA/ChatBot não farão nenhuma validação em relação a impressão de boleto. Caso esse valor seja verdadeiro (true), os campos **data**, **vencimento** e **horasParaPagamento** devem ser preenchidos
+          required: true
+          type: boolean
+          example: true
+        data:
+          description: Data em que foi realizada a última impressão. Esse valor só será utilizado caso o campo **impressaoPossui** estiver como true. Este campo deve estar no formato **yyyy-mm-ddThh:mm:ss**.
+          required: false
+          type: datetime-only
+          example: "2019-01-01T08:15:00"
+        vencimento:
+          description: Data de vencimento da última impressão. Esse valor só será utilizado caso o campo **impressaoPossui** estiver como true. Este campo deve estar no formato **yyyy-mm-dd**.
+          required: false
+          type: date-only
+          example: "2019-01-01"
+        horasParaPagamento:
+          description: Data de vencimento da última impressão. Esse valor só será utilizado caso o campo **impressaoPossui** estiver como true.
+          required: false
+          type: number
+          example: 8
+    serasa:
+      description: Dados referentes ao SERASA
+      type: object
+      required: true
+      properties:
+        possuiCadastroSerasa:
+          description: Indica se a empresa possui algum cadastro no SERASA
+          type: boolean
+          required: true
+          example: true
+        possuiCadastroPreSerasa:
+          description: Indica se a empresa possui algum cadastro no PRÉ-SERASA
+          type: boolean
+          required: true
+          example: true
+        dataPreSerasa:
+          description: Data limite de regularização do PRÉ-SERASA. Só será utilizada quando o campo **possuiCadastroPreSerasa** for **true**. O campo deve estar no formato **yyyy-mm-dd**
+          type: date-only
+          required: false
+          example: "2019-02-01"
+        dataRetiradaSerasa:
+          description: Data em que o cadastro foi retirado do SERASA. O campo deve estar no formato **yyyy-mm-dd**
+          type: date-only
+          required: false
+          example: "2019-02-01"
+          

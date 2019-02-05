@@ -1,0 +1,40 @@
+#%RAML 1.0 DataType
+  type: object
+  properties:
+    cpf: 
+      description: CPF do usuario (Trabalhador ou Operador) que acessou o sistema
+      required: true
+      type: string
+      example: "11122233345"
+    cnpj: 
+      description: CNPJ da empresa. Só será enviado quando for um atendimento de empresa
+      required: false
+      type: string
+      example: "11222333000102"
+    canal:
+      description: Canal utilizado para gerar a ocorrência. Os valores podem ser pré-combinados entre a VoxAge e Beneficio Social, a princípio os valores possíveis são "ura" ou "bot"
+      required: true
+      type: string
+      example: "bot"
+    menu:
+      description: Menu em que foi gerada a ocorrência. Os valores podem ser pré-combinados entre a VoxAge e Beneficio Social, a princípio os valores possíveis são "empresa" ou "trabalhador". É possível incluir novos tipos se necessário
+      required: true
+      type: string
+      example: "empresa"
+    descricao:
+      description: Texto contendo detalhes sobre a ocorrência gerada
+      required: true
+      type: string
+      example: Cliente desligou antes de responder as perguntas de confirmação
+    dataHora:
+      description: Momento em que foi gerada a ocorrência. Essa data é gerada dentro do sistema da VoxAge, no formato rfc3339 (ver exemplo)
+      required: true
+      type: datetime
+      example: "2018-11-21T10:00:00-03:00"
+    callId:
+      description: Número do protocolo dentro do sistema VoxAge. Este número é a identificação única do atendimento telefônico.
+      required: true
+      type: number
+      example: 123456789
+      minimum: 0
+      maximum: 999999990

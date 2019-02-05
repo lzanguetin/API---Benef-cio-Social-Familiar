@@ -1,0 +1,34 @@
+### Obter token de acesso
+GET http://localhost:3001/v1/acesso?usuario=voxage&senha=segredo
+
+### Consultar operador
+GET http://localhost:3001/v1/dadosOperador?cnpj=11222333000666&cpf=1122233344
+Authorization: Bearer ABCD
+
+### Consultar empresa
+GET http://localhost:3001/v1/dadosEmpresa?cnpj=11222333000102
+Authorization: Bearer ABCD
+
+### Consultar trabalhador
+GET http://localhost:3001/v1/dadosTrabalhador?cpf=1122233344
+Authorization: Bearer ABCD
+
+### Registrar ocorrencia
+POST http://localhost:3001/v1/registrarOcorrencia
+Authorization: Bearer ABCD
+Content-Type: application/json
+
+{
+  "cpf": "11122233345",
+  "cnpj": "11222333000102",
+  "canal": "bot",
+  "menu": "empresa",
+  "descricao": "Cliente desligou antes de responder as perguntas de confirmação",
+  "dataHora": "2018-11-21T10:00:00-03:00",
+  "callId": 12345
+}
+
+### Reiniciar senha
+
+GET http://localhost:3001/v1/reiniciarSenha?cpf=1122233345
+Authorization: Bearer ABCD
