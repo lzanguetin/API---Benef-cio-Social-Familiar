@@ -20,6 +20,6 @@ Projeto de API idealizada pra o serviço de atendimento eletrônico (Chat Bot/UR
     
     3.2. Para executar o arquivo RAML usar o comando osprey-mock-service-v2 -f <NOME DO AQRUIVO RAML SEM <>> -p 3001 --cors
   
-  4. Usar Visual Studio Code com a extensão REST Client para testar
+4.Usar Visual Studio Code com a extensão REST Client para testar
     
 
